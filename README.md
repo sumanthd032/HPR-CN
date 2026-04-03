@@ -62,8 +62,6 @@ HPR-CN/
 ├── requirements.txt
 ├── simulation_results.json     # Cellular 4G detailed results (generated)
 ├── all_results.json            # All-trace summary results (generated)
-├── HPR_IEEE_Paper.pdf          # Research paper (IEEE format)
-└── HPR_Complete_Guide.docx     # Extended explanation and walkthrough
 ```
 
 ---
@@ -152,12 +150,6 @@ when instantiating:
 
 ---
 
-## Citation
-
-```
-[Add citation after publication]
-```
-
 ## License
 
-Academic use. See your institution's guidelines.
+Academic use. 
