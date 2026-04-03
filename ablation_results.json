@@ -1,26 +1,26 @@
 {
-  "sudden_drop": {
+  "sudden_drop_seed42": {
     "HPR (Proposed)": {
       "mae_kbps": 1715.92,
       "rmse_kbps": 1949.09,
       "mape_percent": 51.29,
-      "utilization": 0.4629,
+      "utilization": 0.4667,
       "overestimation_pct": 1.36,
       "avg_delay_ms": 147.44,
       "avg_loss_rate": 0.0269,
-      "avg_psnr_db": 35.9,
-      "avg_mos": 3.24,
+      "avg_psnr_db": 35.87,
+      "avg_mos": 3.23,
       "avg_convergence_ms": 3869.05
     },
     "HPR-NoPred": {
       "mae_kbps": 1633.05,
       "rmse_kbps": 1867.13,
       "mape_percent": 48.26,
-      "utilization": 0.4902,
+      "utilization": 0.4946,
       "overestimation_pct": 1.37,
       "avg_delay_ms": 157.36,
       "avg_loss_rate": 0.0304,
-      "avg_psnr_db": 36.38,
+      "avg_psnr_db": 36.34,
       "avg_mos": 3.3,
       "avg_convergence_ms": 3159.52
     },
@@ -28,11 +28,11 @@
       "mae_kbps": 1716.89,
       "rmse_kbps": 1937.84,
       "mape_percent": 52.23,
-      "utilization": 0.4504,
+      "utilization": 0.4529,
       "overestimation_pct": 1.13,
       "avg_delay_ms": 138.22,
       "avg_loss_rate": 0.0235,
-      "avg_psnr_db": 35.81,
+      "avg_psnr_db": 35.78,
       "avg_mos": 3.22,
       "avg_convergence_ms": 3992.11
     },
@@ -40,11 +40,11 @@
       "mae_kbps": 1711.47,
       "rmse_kbps": 1937.04,
       "mape_percent": 51.4,
-      "utilization": 0.4652,
+      "utilization": 0.4682,
       "overestimation_pct": 1.54,
       "avg_delay_ms": 146.46,
       "avg_loss_rate": 0.0267,
-      "avg_psnr_db": 35.94,
+      "avg_psnr_db": 35.92,
       "avg_mos": 3.24,
       "avg_convergence_ms": 3737.21
     },
@@ -52,21 +52,21 @@
       "mae_kbps": 2508.4,
       "rmse_kbps": 2807.04,
       "mape_percent": 72.54,
-      "utilization": 0.2476,
+      "utilization": 0.2481,
       "overestimation_pct": 0.03,
       "avg_delay_ms": 85.35,
       "avg_loss_rate": 0.0141,
-      "avg_psnr_db": 30.78,
+      "avg_psnr_db": 30.77,
       "avg_mos": 2.57,
       "avg_convergence_ms": 3760.0
     }
   },
-  "cellular_4g": {
+  "cellular_4g_seed42": {
     "HPR (Proposed)": {
       "mae_kbps": 866.69,
       "rmse_kbps": 1000.74,
       "mape_percent": 36.32,
-      "utilization": 0.5801,
+      "utilization": 0.5808,
       "overestimation_pct": 0.39,
       "avg_delay_ms": 175.18,
       "avg_loss_rate": 0.0275,
@@ -78,11 +78,11 @@
       "mae_kbps": 796.17,
       "rmse_kbps": 946.27,
       "mape_percent": 33.01,
-      "utilization": 0.6147,
+      "utilization": 0.6154,
       "overestimation_pct": 0.66,
       "avg_delay_ms": 188.46,
       "avg_loss_rate": 0.0335,
-      "avg_psnr_db": 37.04,
+      "avg_psnr_db": 37.03,
       "avg_mos": 3.39,
       "avg_convergence_ms": 441.11
     },
@@ -90,11 +90,11 @@
       "mae_kbps": 826.65,
       "rmse_kbps": 970.41,
       "mape_percent": 34.18,
-      "utilization": 0.5993,
+      "utilization": 0.5988,
       "overestimation_pct": 0.38,
       "avg_delay_ms": 183.31,
       "avg_loss_rate": 0.0278,
-      "avg_psnr_db": 36.91,
+      "avg_psnr_db": 36.9,
       "avg_mos": 3.37,
       "avg_convergence_ms": 658.14
     },
@@ -102,11 +102,11 @@
       "mae_kbps": 873.22,
       "rmse_kbps": 1017.84,
       "mape_percent": 36.41,
-      "utilization": 0.578,
+      "utilization": 0.5781,
       "overestimation_pct": 0.32,
       "avg_delay_ms": 175.16,
       "avg_loss_rate": 0.0279,
-      "avg_psnr_db": 36.57,
+      "avg_psnr_db": 36.58,
       "avg_mos": 3.33,
       "avg_convergence_ms": 698.35
     },
@@ -114,13 +114,437 @@
       "mae_kbps": 1509.27,
       "rmse_kbps": 1607.0,
       "mape_percent": 63.85,
-      "utilization": 0.3253,
+      "utilization": 0.3257,
       "overestimation_pct": 0.0,
       "avg_delay_ms": 97.77,
       "avg_loss_rate": 0.0139,
       "avg_psnr_db": 32.15,
       "avg_mos": 2.76,
       "avg_convergence_ms": 4755.63
+    }
+  },
+  "sudden_drop_multiseed": {
+    "HPR (Proposed)": {
+      "mae_kbps": {
+        "mean": 1759.7,
+        "std": 28.2266
+      },
+      "rmse_kbps": {
+        "mean": 1995.5,
+        "std": 37.3024
+      },
+      "mape_percent": {
+        "mean": 52.752,
+        "std": 0.857
+      },
+      "utilization": {
+        "mean": 0.4544,
+        "std": 0.0062
+      },
+      "overestimation_pct": {
+        "mean": 1.45,
+        "std": 0.2173
+      },
+      "avg_delay_ms": {
+        "mean": 142.72,
+        "std": 3.0807
+      },
+      "avg_loss_rate": {
+        "mean": 0.0261,
+        "std": 0.0009
+      },
+      "avg_psnr_db": {
+        "mean": 35.634,
+        "std": 0.1323
+      },
+      "avg_mos": {
+        "mean": 3.198,
+        "std": 0.0183
+      },
+      "avg_convergence_ms": {
+        "mean": 2737.882,
+        "std": 642.6017
+      }
+    },
+    "HPR-NoPred": {
+      "mae_kbps": {
+        "mean": 1685.822,
+        "std": 26.8931
+      },
+      "rmse_kbps": {
+        "mean": 1917.822,
+        "std": 25.5567
+      },
+      "mape_percent": {
+        "mean": 50.878,
+        "std": 1.4079
+      },
+      "utilization": {
+        "mean": 0.4737,
+        "std": 0.0127
+      },
+      "overestimation_pct": {
+        "mean": 1.556,
+        "std": 0.2567
+      },
+      "avg_delay_ms": {
+        "mean": 147.188,
+        "std": 5.8476
+      },
+      "avg_loss_rate": {
+        "mean": 0.0309,
+        "std": 0.0015
+      },
+      "avg_psnr_db": {
+        "mean": 35.96,
+        "std": 0.2051
+      },
+      "avg_mos": {
+        "mean": 3.246,
+        "std": 0.0294
+      },
+      "avg_convergence_ms": {
+        "mean": 2809.882,
+        "std": 478.6081
+      }
+    },
+    "HPR-FixQ": {
+      "mae_kbps": {
+        "mean": 1753.226,
+        "std": 30.6202
+      },
+      "rmse_kbps": {
+        "mean": 1982.146,
+        "std": 36.1446
+      },
+      "mape_percent": {
+        "mean": 52.97,
+        "std": 0.9956
+      },
+      "utilization": {
+        "mean": 0.4497,
+        "std": 0.0098
+      },
+      "overestimation_pct": {
+        "mean": 1.316,
+        "std": 0.2141
+      },
+      "avg_delay_ms": {
+        "mean": 138.456,
+        "std": 6.0312
+      },
+      "avg_loss_rate": {
+        "mean": 0.0244,
+        "std": 0.0013
+      },
+      "avg_psnr_db": {
+        "mean": 35.654,
+        "std": 0.1832
+      },
+      "avg_mos": {
+        "mean": 3.204,
+        "std": 0.0258
+      },
+      "avg_convergence_ms": {
+        "mean": 2901.832,
+        "std": 595.6148
+      }
+    },
+    "HPR-NoPreemp": {
+      "mae_kbps": {
+        "mean": 1740.366,
+        "std": 41.0759
+      },
+      "rmse_kbps": {
+        "mean": 1963.764,
+        "std": 39.1882
+      },
+      "mape_percent": {
+        "mean": 52.818,
+        "std": 1.984
+      },
+      "utilization": {
+        "mean": 0.4533,
+        "std": 0.0209
+      },
+      "overestimation_pct": {
+        "mean": 1.398,
+        "std": 0.1604
+      },
+      "avg_delay_ms": {
+        "mean": 139.612,
+        "std": 8.4109
+      },
+      "avg_loss_rate": {
+        "mean": 0.0268,
+        "std": 0.0014
+      },
+      "avg_psnr_db": {
+        "mean": 35.69,
+        "std": 0.3314
+      },
+      "avg_mos": {
+        "mean": 3.206,
+        "std": 0.0463
+      },
+      "avg_convergence_ms": {
+        "mean": 3331.576,
+        "std": 998.0961
+      }
+    },
+    "HPR-NoClassifier": {
+      "mae_kbps": {
+        "mean": 2530.372,
+        "std": 28.3378
+      },
+      "rmse_kbps": {
+        "mean": 2831.008,
+        "std": 32.5015
+      },
+      "mape_percent": {
+        "mean": 73.06,
+        "std": 0.6706
+      },
+      "utilization": {
+        "mean": 0.2511,
+        "std": 0.01
+      },
+      "overestimation_pct": {
+        "mean": 0.424,
+        "std": 0.311
+      },
+      "avg_delay_ms": {
+        "mean": 90.408,
+        "std": 6.1035
+      },
+      "avg_loss_rate": {
+        "mean": 0.0149,
+        "std": 0.0012
+      },
+      "avg_psnr_db": {
+        "mean": 30.626,
+        "std": 0.2201
+      },
+      "avg_mos": {
+        "mean": 2.548,
+        "std": 0.0279
+      },
+      "avg_convergence_ms": {
+        "mean": 3530.832,
+        "std": 569.8984
+      }
+    }
+  },
+  "cellular_4g_multiseed": {
+    "HPR (Proposed)": {
+      "mae_kbps": {
+        "mean": 864.526,
+        "std": 24.0718
+      },
+      "rmse_kbps": {
+        "mean": 1004.744,
+        "std": 23.6573
+      },
+      "mape_percent": {
+        "mean": 36.46,
+        "std": 1.0819
+      },
+      "utilization": {
+        "mean": 0.5791,
+        "std": 0.0099
+      },
+      "overestimation_pct": {
+        "mean": 0.376,
+        "std": 0.0496
+      },
+      "avg_delay_ms": {
+        "mean": 176.358,
+        "std": 3.9701
+      },
+      "avg_loss_rate": {
+        "mean": 0.0267,
+        "std": 0.0008
+      },
+      "avg_psnr_db": {
+        "mean": 36.502,
+        "std": 0.1565
+      },
+      "avg_mos": {
+        "mean": 3.318,
+        "std": 0.0204
+      },
+      "avg_convergence_ms": {
+        "mean": 762.66,
+        "std": 25.9884
+      }
+    },
+    "HPR-NoPred": {
+      "mae_kbps": {
+        "mean": 807.216,
+        "std": 11.6431
+      },
+      "rmse_kbps": {
+        "mean": 957.062,
+        "std": 12.8042
+      },
+      "mape_percent": {
+        "mean": 33.91,
+        "std": 0.6103
+      },
+      "utilization": {
+        "mean": 0.6097,
+        "std": 0.0061
+      },
+      "overestimation_pct": {
+        "mean": 0.812,
+        "std": 0.1261
+      },
+      "avg_delay_ms": {
+        "mean": 186.176,
+        "std": 2.9162
+      },
+      "avg_loss_rate": {
+        "mean": 0.0338,
+        "std": 0.0011
+      },
+      "avg_psnr_db": {
+        "mean": 36.854,
+        "std": 0.1167
+      },
+      "avg_mos": {
+        "mean": 3.366,
+        "std": 0.015
+      },
+      "avg_convergence_ms": {
+        "mean": 473.302,
+        "std": 67.8608
+      }
+    },
+    "HPR-FixQ": {
+      "mae_kbps": {
+        "mean": 850.15,
+        "std": 18.9621
+      },
+      "rmse_kbps": {
+        "mean": 994.832,
+        "std": 19.3683
+      },
+      "mape_percent": {
+        "mean": 35.614,
+        "std": 0.9579
+      },
+      "utilization": {
+        "mean": 0.5867,
+        "std": 0.0086
+      },
+      "overestimation_pct": {
+        "mean": 0.398,
+        "std": 0.0584
+      },
+      "avg_delay_ms": {
+        "mean": 179.646,
+        "std": 3.3738
+      },
+      "avg_loss_rate": {
+        "mean": 0.0272,
+        "std": 0.0005
+      },
+      "avg_psnr_db": {
+        "mean": 36.616,
+        "std": 0.1686
+      },
+      "avg_mos": {
+        "mean": 3.332,
+        "std": 0.0223
+      },
+      "avg_convergence_ms": {
+        "mean": 784.294,
+        "std": 93.8898
+      }
+    },
+    "HPR-NoPreemp": {
+      "mae_kbps": {
+        "mean": 859.008,
+        "std": 17.5637
+      },
+      "rmse_kbps": {
+        "mean": 1000.002,
+        "std": 22.504
+      },
+      "mape_percent": {
+        "mean": 36.132,
+        "std": 0.652
+      },
+      "utilization": {
+        "mean": 0.5811,
+        "std": 0.0065
+      },
+      "overestimation_pct": {
+        "mean": 0.344,
+        "std": 0.0516
+      },
+      "avg_delay_ms": {
+        "mean": 176.608,
+        "std": 2.0273
+      },
+      "avg_loss_rate": {
+        "mean": 0.0269,
+        "std": 0.0009
+      },
+      "avg_psnr_db": {
+        "mean": 36.546,
+        "std": 0.0973
+      },
+      "avg_mos": {
+        "mean": 3.324,
+        "std": 0.0102
+      },
+      "avg_convergence_ms": {
+        "mean": 747.754,
+        "std": 119.0949
+      }
+    },
+    "HPR-NoClassifier": {
+      "mae_kbps": {
+        "mean": 1539.094,
+        "std": 37.6011
+      },
+      "rmse_kbps": {
+        "mean": 1636.272,
+        "std": 32.8224
+      },
+      "mape_percent": {
+        "mean": 65.64,
+        "std": 1.6995
+      },
+      "utilization": {
+        "mean": 0.3096,
+        "std": 0.0154
+      },
+      "overestimation_pct": {
+        "mean": 0.012,
+        "std": 0.0147
+      },
+      "avg_delay_ms": {
+        "mean": 94.536,
+        "std": 4.1126
+      },
+      "avg_loss_rate": {
+        "mean": 0.0147,
+        "std": 0.0005
+      },
+      "avg_psnr_db": {
+        "mean": 31.658,
+        "std": 0.3491
+      },
+      "avg_mos": {
+        "mean": 2.694,
+        "std": 0.0459
+      },
+      "avg_convergence_ms": {
+        "mean": 4615.134,
+        "std": 368.0898
+      }
     }
   }
 }

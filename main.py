@@ -63,22 +63,28 @@ def main() -> None:
     _print_overest_table(all_multiseed)
 
     # ================================================================
-    # 3. Ablation study on sudden-drop trace
+    # 3. Multi-seed ablation study
     # ================================================================
     print("\n\n" + "=" * 70)
-    print("  ABLATION STUDY  (Sudden-Drop trace, seed 42)")
+    print("  MULTI-SEED ABLATION STUDY  (Sudden-Drop trace, 5 seeds)")
     print("=" * 70)
-    abl_config   = SimulationConfig(trace_type=TraceType.SUDDEN_DROP)
-    ablation_res = run_ablation(abl_config, seed=42, verbose=True)
+    abl_config    = SimulationConfig(trace_type=TraceType.SUDDEN_DROP)
+    abl_multiseed = _run_ablation_multiseed(abl_config, SEEDS)
 
-    # Also run ablation on cellular trace
-    print("\n  [Cellular 4G trace]")
+    print("\n  [Cellular 4G trace, 5 seeds]")
     abl_config_4g  = SimulationConfig(trace_type=TraceType.CELLULAR_4G)
-    ablation_4g    = run_ablation(abl_config_4g, seed=42, verbose=True)
+    abl_multi_4g   = _run_ablation_multiseed(abl_config_4g, SEEDS)
+
+    # Single-seed ablation for the tables
+    ablation_res = run_ablation(abl_config, seed=42, verbose=False)
+    ablation_4g  = run_ablation(abl_config_4g, seed=42, verbose=False)
 
     # ================================================================
     # 4. Detailed JSON exports
     # ================================================================
+    # Print multi-seed ablation tables
+    _print_ablation_table("Sudden-Drop", abl_multiseed)
+    _print_ablation_table("Cellular-4G", abl_multi_4g)
     # Detailed single-seed results for cellular trace
     config4g = SimulationConfig(trace_type=TraceType.CELLULAR_4G)
     np.random.seed(42)
@@ -92,8 +98,10 @@ def main() -> None:
 
     # Ablation results
     ablation_export = {
-        "sudden_drop": {k: v["metrics"] for k, v in ablation_res.items()},
-        "cellular_4g": {k: v["metrics"] for k, v in ablation_4g.items()},
+        "sudden_drop_seed42":     {k: v["metrics"] for k, v in ablation_res.items()},
+        "cellular_4g_seed42":     {k: v["metrics"] for k, v in ablation_4g.items()},
+        "sudden_drop_multiseed":  abl_multiseed,
+        "cellular_4g_multiseed":  abl_multi_4g,
     }
     with open("ablation_results.json", "w", encoding="utf-8") as fh:
         json.dump(ablation_export, fh, indent=2)
@@ -103,6 +111,40 @@ def main() -> None:
 # -----------------------------------------------------------------------
 # Table helpers
 # -----------------------------------------------------------------------
+
+def _run_ablation_multiseed(config, seeds):
+    """Run ablation variants over multiple seeds; return mean±std per metric."""
+    from hpr import run_ablation, ABLATION_KEYS
+    accumulator = {k: {} for k in ABLATION_KEYS}
+    for seed in seeds:
+        results = run_ablation(config, seed=seed, verbose=False)
+        for variant, data in results.items():
+            for metric, value in data["metrics"].items():
+                accumulator[variant].setdefault(metric, []).append(value)
+    summary = {}
+    for variant, metric_lists in accumulator.items():
+        summary[variant] = {}
+        for metric, values in metric_lists.items():
+            arr = np.array(values)
+            summary[variant][metric] = {
+                "mean": round(float(np.mean(arr)), 4),
+                "std":  round(float(np.std(arr)),  4),
+            }
+    return summary
+
+
+def _print_ablation_table(trace_name, ablation_summary):
+    print(f"\n  Ablation ({trace_name}, mean±std over 5 seeds):")
+    fmt = "    {:<22} overest={:>6.2f}±{:.2f}%  delay={:>5.0f}±{:.0f}ms  MOS={:.2f}±{:.2f}  RMSE={:.0f}±{:.0f}"
+    for variant, metrics in ablation_summary.items():
+        print(fmt.format(
+            variant,
+            metrics["overestimation_pct"]["mean"], metrics["overestimation_pct"]["std"],
+            metrics["avg_delay_ms"]["mean"],        metrics["avg_delay_ms"]["std"],
+            metrics["avg_mos"]["mean"],              metrics["avg_mos"]["std"],
+            metrics["rmse_kbps"]["mean"],            metrics["rmse_kbps"]["std"],
+        ))
+
 
 def _print_mos_table(all_results: dict) -> None:
     print("\n\n" + "=" * 80)

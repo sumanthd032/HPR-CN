@@ -90,26 +90,31 @@ def run_simulation(
             link.send_packet(pkt)
             packets.append(pkt)
 
+        # ---- Collect stats for THIS interval (packets sent at current sending_rate) ----
+        received      = [p for p in packets if not p.lost]
+        avg_delay     = (float(np.mean([p.recv_time_ms - p.send_time_ms
+                                        for p in received]))
+                         if received else 0.0)
+        loss_rate     = sum(1 for p in packets if p.lost) / len(packets)
+        effective_rate = sending_rate   # rate that WAS used to generate this interval's packets
+
         # ---- Update estimator ----
         estimated_bw = estimator.update(packets, current_time_ms)
 
-        # ---- Adapt sending rate ----
+        # ---- Adapt sending rate for NEXT interval ----
+        # The estimator output B̂_t directly sets the next sender bitrate:
+        #   r_{t+1} = 0.9 × B̂_t
+        # This is the closed-loop property: the estimator drives the sender,
+        # NOT the ground-truth bandwidth.
         sending_rate = float(np.clip(
             estimated_bw * config.sending_margin, 100, 10_000
         ))
-
-        # ---- Collect stats ----
-        received  = [p for p in packets if not p.lost]
-        avg_delay = (float(np.mean([p.recv_time_ms - p.send_time_ms
-                                    for p in received]))
-                     if received else 0.0)
-        loss_rate = sum(1 for p in packets if p.lost) / len(packets)
 
         stats.append(NetworkStats(
             time_ms           = current_time_ms,
             actual_bw_kbps    = actual_bw,
             estimated_bw_kbps = estimated_bw,
-            sending_rate_kbps = sending_rate,
+            sending_rate_kbps = effective_rate,   # rate actually used this interval
             delay_ms          = avg_delay,
             loss_rate         = loss_rate,
             queue_size        = len(link.queue),
