@@ -63,8 +63,24 @@ class HybridPredictiveEstimator(BaseEstimator):
         prediction_weight:     float = 0.35,
         window_size:           int   = 10,
         delay_threshold:       float = 10.0,
+        ablation_mode:         Optional[str] = None,
     ) -> None:
+        """
+        Parameters
+        ----------
+        ablation_mode : str or None
+            Controls which HPR components are active (for ablation studies).
+            ``None``            — full HPR (default)
+            ``"no_predictor"``  — Layer 2 disabled; purely reactive + adaptive-Q Kalman
+            ``"fixed_q"``       — Layer 3 uses fixed Q = Q0 (no adaptive scaling)
+            ``"no_preemptive"`` — preemptive reduction step disabled
+            ``"no_classifier"`` — Layer 1 uses a simple 2-state (overuse/clear)
+                                   classifier instead of the 5-class scheme
+        """
         super().__init__(initial_estimate_kbps)
+
+        # ---- Ablation control ----
+        self.ablation_mode        = ablation_mode
 
         # ---- Layer 1: Reactive (delay-gradient) ----
         self.alpha                = 0.85
@@ -125,13 +141,16 @@ class HybridPredictiveEstimator(BaseEstimator):
         """
         Classify the current network state and return a reactive rate target.
 
-        Congestion types
-        ----------------
+        Congestion types (5-class scheme, Layer 1 of HPR)
+        --------------------------------------------------
         ``severe``  : delay gradient AND loss both high — queue + overflow
         ``delay``   : delay gradient high, loss low — queue building up
         ``wireless``: loss high but delay is *not* growing — random errors
         ``mild``    : borderline delay hints, low loss
         ``clear``   : no congestion signal — safe to probe upward
+
+        Ablation: ``no_classifier`` uses a simpler GCC-like 2-state rule
+        (overuse/clear) that treats delay and loss identically.
 
         Returns
         -------
@@ -142,25 +161,22 @@ class HybridPredictiveEstimator(BaseEstimator):
         high_loss    = loss_rate > 0.04
         mild_loss    = 0.015 < loss_rate <= 0.04
 
+        # ---- Ablation: simple 2-state classifier (like GCC Layer 1) ----
+        if self.ablation_mode == "no_classifier":
+            if high_delay or high_loss:
+                return "overuse", self.estimate * 0.85
+            return "clear", max(self.estimate * 1.05, self.estimate + 50)
+
+        # ---- Full 5-class classifier ----
         if high_delay and high_loss:
-            # Severe: buffer overflow — back off aggressively
-            return "severe",  self.estimate * 0.78
-
+            return "severe",   self.estimate * 0.78
         if high_delay:
-            # Queue build-up: preemptive back-off to drain buffer
-            return "delay",   self.estimate * 0.85
-
+            return "delay",    self.estimate * 0.85
         if high_loss:
             # Loss without delay growth → wireless random errors (not queue)
-            # Only gentle reduction; the link is not actually congested
             return "wireless", self.estimate * 0.92
-
         if moderate_del or mild_loss:
-            # Borderline hints: cautious probe
-            return "mild",    max(self.estimate * 1.04, self.estimate + 80)
-
-        # Clear channel: HPR probes aggressively; Kalman + prediction
-        # provide the safety net so we can afford a steeper ramp
+            return "mild",     max(self.estimate * 1.04, self.estimate + 80)
         return "clear", max(self.estimate * 1.15, self.estimate + 250)
 
     # ==================================================================
@@ -223,27 +239,26 @@ class HybridPredictiveEstimator(BaseEstimator):
         """
         Kalman filter update step.
 
-        Process noise Q adapts to recent bandwidth variability: a more
-        volatile link needs a larger Q so the filter can track faster changes.
-        This is the key difference from static-Q Kalman implementations in
-        prior bandwidth estimation work.
+        Adaptive Q: process noise scales with coefficient of variation (CV)
+        of recent measurements.  A volatile link gets larger Q, so the filter
+        tracks faster changes; a stable link gets smaller Q, smoothing noise.
+        Static-Q Kalman (prior work, and the ``fixed_q`` ablation) is a
+        special case where Q remains constant at Q0.
         """
-        # Adaptive Q: scale base process noise by (1 + CV)
-        if len(self.recent_measurements) >= 5:
-            recent      = np.array(self.recent_measurements[-5:])
-            cv          = np.std(recent) / max(np.mean(recent), 1.0)
-            adaptive_q  = self.base_process_noise * (1.0 + min(cv * 3.0, 3.0))
+        # ---- Compute adaptive Q (disabled in fixed_q ablation) ----
+        if self.ablation_mode == "fixed_q" or len(self.recent_measurements) < 5:
+            adaptive_q = self.base_process_noise
         else:
-            adaptive_q  = self.base_process_noise
+            recent     = np.array(self.recent_measurements[-5:])
+            cv         = np.std(recent) / max(np.mean(recent), 1.0)
+            adaptive_q = self.base_process_noise * (1.0 + min(cv * 3.0, 3.0))
 
-        # Predict
-        predicted_error  = self.kalman_error + adaptive_q
-
-        # Update
-        kalman_gain      = predicted_error / (predicted_error + self.measurement_noise)
+        # ---- Kalman predict / update ----
+        predicted_error      = self.kalman_error + adaptive_q
+        kalman_gain          = predicted_error / (predicted_error + self.measurement_noise)
         self.kalman_estimate = (self.kalman_estimate
                                 + kalman_gain * (measurement - self.kalman_estimate))
-        self.kalman_error    = (1 - kalman_gain) * predicted_error
+        self.kalman_error    = (1.0 - kalman_gain) * predicted_error
 
         return self.kalman_estimate
 
@@ -267,14 +282,12 @@ class HybridPredictiveEstimator(BaseEstimator):
         # ---- Step 2: reactive estimate ----
         congestion_type, reactive_est = self._classify_congestion(loss_rate)
 
-        # ---- Step 3: predictive estimate ----
-        trend_est = self._predict_trend()
+        # ---- Step 3: predictive estimate (disabled in no_predictor ablation) ----
+        trend_est = None if self.ablation_mode == "no_predictor" else self._predict_trend()
 
         # ---- Step 4: fuse reactive + predictive ----
         if trend_est is not None:
-            # Weight the prediction by its reliability (stability_score)
-            # and the user-configured maximum prediction_weight
-            w       = self.prediction_weight * self.stability_score
+            w        = self.prediction_weight * self.stability_score
             combined = (1.0 - w) * reactive_est + w * trend_est
         else:
             combined = reactive_est
@@ -288,11 +301,12 @@ class HybridPredictiveEstimator(BaseEstimator):
         elif loss_rate > 0.05:
             fused *= 0.75
 
-        # ---- Step 7: preemptive reduction (HPR's key advantage) ----
+        # ---- Step 7: preemptive reduction (disabled in no_preemptive ablation) ----
         # When the trend clearly predicts a future decline, reduce now
         # while the channel is still stable — avoids the reactive delay.
         if (
-            trend_est is not None
+            self.ablation_mode != "no_preemptive"
+            and trend_est is not None
             and congestion_type in ("clear", "mild")
             and len(self.recent_measurements) > 15
             and self.stability_score > 0.5

@@ -1,0 +1,229 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="1100" height="820" viewBox="0 0 1100 820" xmlns="http://www.w3.org/2000/svg" font-family="Arial, sans-serif">
+  <defs>
+    <marker id="arrow" markerWidth="10" markerHeight="7" refX="10" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#555"/>
+    </marker>
+    <marker id="arrow-blue" markerWidth="10" markerHeight="7" refX="10" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#2563eb"/>
+    </marker>
+    <filter id="shadow" x="-5%" y="-5%" width="110%" height="110%">
+      <feDropShadow dx="2" dy="2" stdDeviation="3" flood-color="#00000022"/>
+    </filter>
+  </defs>
+
+  <!-- Background -->
+  <rect width="1100" height="820" fill="#f8fafc"/>
+
+  <!-- Title -->
+  <text x="550" y="38" text-anchor="middle" font-size="22" font-weight="bold" fill="#1e293b">HPR System Architecture — Hybrid Predictive-Reactive Bandwidth Estimation</text>
+
+  <!-- ============================================================ -->
+  <!-- ROW 1: Bandwidth Trace Generator -->
+  <!-- ============================================================ -->
+  <rect x="330" y="60" width="440" height="70" rx="10" fill="#e0f2fe" stroke="#0284c7" stroke-width="2" filter="url(#shadow)"/>
+  <text x="550" y="89" text-anchor="middle" font-size="14" font-weight="bold" fill="#0c4a6e">Bandwidth Trace Generator</text>
+  <text x="550" y="108" text-anchor="middle" font-size="11" fill="#0369a1">6 Scenarios · 120 s · 100 ms step (1200 samples)</text>
+  <!-- Scenario pills -->
+  <rect x="340" y="116" width="85" height="18" rx="9" fill="#bae6fd"/>
+  <text x="382" y="129" text-anchor="middle" font-size="9" fill="#075985">STABLE</text>
+  <rect x="433" y="116" width="95" height="18" rx="9" fill="#bae6fd"/>
+  <text x="480" y="129" text-anchor="middle" font-size="9" fill="#075985">FLUCTUATING</text>
+  <rect x="536" y="116" width="95" height="18" rx="9" fill="#bae6fd"/>
+  <text x="583" y="129" text-anchor="middle" font-size="9" fill="#075985">SUDDEN DROP</text>
+  <rect x="639" y="116" width="105" height="18" rx="9" fill="#bae6fd"/>
+  <text x="691" y="129" text-anchor="middle" font-size="9" fill="#075985">GRADUAL DECLINE</text>
+  <!-- Arrow down -->
+  <line x1="550" y1="138" x2="550" y2="168" stroke="#555" stroke-width="2" marker-end="url(#arrow)"/>
+
+  <!-- ============================================================ -->
+  <!-- ROW 2: Network Link Simulator -->
+  <!-- ============================================================ -->
+  <rect x="330" y="170" width="440" height="90" rx="10" fill="#fef3c7" stroke="#d97706" stroke-width="2" filter="url(#shadow)"/>
+  <text x="550" y="194" text-anchor="middle" font-size="14" font-weight="bold" fill="#78350f">Network Link Simulator</text>
+  <text x="550" y="212" text-anchor="middle" font-size="11" fill="#92400e">Packet-Level Simulation  ·  Queue Size: 50 pkts  ·  Pkt: 1200 B</text>
+  <!-- Four sub-boxes -->
+  <rect x="342" y="220" width="95" height="32" rx="6" fill="#fde68a" stroke="#f59e0b"/>
+  <text x="390" y="236" text-anchor="middle" font-size="9" fill="#451a03">Transmission</text>
+  <text x="390" y="247" text-anchor="middle" font-size="9" fill="#451a03">Delay</text>
+  <rect x="446" y="220" width="95" height="32" rx="6" fill="#fde68a" stroke="#f59e0b"/>
+  <text x="494" y="236" text-anchor="middle" font-size="9" fill="#451a03">Propagation +</text>
+  <text x="494" y="247" text-anchor="middle" font-size="9" fill="#451a03">Jitter (10 ms)</text>
+  <rect x="550" y="220" width="95" height="32" rx="6" fill="#fde68a" stroke="#f59e0b"/>
+  <text x="598" y="236" text-anchor="middle" font-size="9" fill="#451a03">Queue Delay</text>
+  <text x="598" y="247" text-anchor="middle" font-size="9" fill="#451a03">(droptail)</text>
+  <rect x="654" y="220" width="105" height="32" rx="6" fill="#fde68a" stroke="#f59e0b"/>
+  <text x="706" y="236" text-anchor="middle" font-size="9" fill="#451a03">Random Loss</text>
+  <text x="706" y="247" text-anchor="middle" font-size="9" fill="#451a03">~1.5% wireless</text>
+
+  <!-- Arrow splits into 3 -->
+  <line x1="550" y1="262" x2="550" y2="285" stroke="#555" stroke-width="2"/>
+  <line x1="550" y1="285" x2="195" y2="285" stroke="#555" stroke-width="2"/>
+  <line x1="550" y1="285" x2="905" y2="285" stroke="#555" stroke-width="2"/>
+  <line x1="195" y1="285" x2="195" y2="310" stroke="#555" stroke-width="2" marker-end="url(#arrow)"/>
+  <line x1="550" y1="285" x2="550" y2="310" stroke="#555" stroke-width="2" marker-end="url(#arrow)"/>
+  <line x1="905" y1="285" x2="905" y2="310" stroke="#555" stroke-width="2" marker-end="url(#arrow)"/>
+
+  <!-- ============================================================ -->
+  <!-- ROW 3: Three Estimators (side by side) -->
+  <!-- ============================================================ -->
+
+  <!-- AIMD -->
+  <rect x="60" y="312" width="270" height="130" rx="10" fill="#fce7f3" stroke="#db2777" stroke-width="2" filter="url(#shadow)"/>
+  <text x="195" y="336" text-anchor="middle" font-size="13" font-weight="bold" fill="#831843">AIMD Estimator</text>
+  <text x="195" y="352" text-anchor="middle" font-size="10" fill="#9d174d">Additive Increase / Multiplicative Decrease</text>
+  <line x1="80" y1="360" x2="320" y2="360" stroke="#f9a8d4" stroke-width="1"/>
+  <text x="195" y="376" text-anchor="middle" font-size="10" fill="#831843">+ Increase: +250 kbps/step</text>
+  <text x="195" y="392" text-anchor="middle" font-size="10" fill="#831843">× Decrease: ×0.85 on loss</text>
+  <text x="195" y="408" text-anchor="middle" font-size="10" fill="#831843">Signal: Packet loss only</text>
+  <text x="195" y="424" text-anchor="middle" font-size="10" fill="#9d174d">Baseline — TCP-like</text>
+  <rect x="80" y="430" width="230" height="22" rx="5" fill="#f9a8d4"/>
+  <text x="195" y="445" text-anchor="middle" font-size="9" fill="#831843">No delay awareness · No prediction</text>
+
+  <!-- GCC -->
+  <rect x="415" y="312" width="270" height="130" rx="10" fill="#ede9fe" stroke="#7c3aed" stroke-width="2" filter="url(#shadow)"/>
+  <text x="550" y="336" text-anchor="middle" font-size="13" font-weight="bold" fill="#4c1d95">GCC Estimator</text>
+  <text x="550" y="352" text-anchor="middle" font-size="10" fill="#5b21b6">Google Congestion Control (RFC 8698)</text>
+  <line x1="435" y1="360" x2="675" y2="360" stroke="#c4b5fd" stroke-width="1"/>
+  <text x="550" y="376" text-anchor="middle" font-size="10" fill="#4c1d95">Delay gradient: EWMA filter</text>
+  <text x="550" y="392" text-anchor="middle" font-size="10" fill="#4c1d95">State machine: Hold / Increase / Decrease</text>
+  <text x="550" y="408" text-anchor="middle" font-size="10" fill="#4c1d95">Signal: Delay gradient + loss</text>
+  <text x="550" y="424" text-anchor="middle" font-size="10" fill="#5b21b6">Reactive only</text>
+  <rect x="435" y="430" width="230" height="22" rx="5" fill="#c4b5fd"/>
+  <text x="550" y="445" text-anchor="middle" font-size="9" fill="#4c1d95">No predictive component · Single threshold</text>
+
+  <!-- HPR (Proposed) -->
+  <rect x="770" y="312" width="270" height="130" rx="10" fill="#dcfce7" stroke="#16a34a" stroke-width="2.5" filter="url(#shadow)"/>
+  <text x="905" y="336" text-anchor="middle" font-size="13" font-weight="bold" fill="#14532d">HPR (Proposed)</text>
+  <text x="905" y="352" text-anchor="middle" font-size="10" fill="#166534">Hybrid Predictive-Reactive Algorithm</text>
+  <line x1="790" y1="360" x2="1030" y2="360" stroke="#86efac" stroke-width="1"/>
+  <text x="905" y="376" text-anchor="middle" font-size="10" fill="#14532d">Layer 1: Reactive (delay-gradient)</text>
+  <text x="905" y="392" text-anchor="middle" font-size="10" fill="#14532d">Layer 2: Predictive (WLS trend)</text>
+  <text x="905" y="408" text-anchor="middle" font-size="10" fill="#14532d">Layer 3: Adaptive Kalman Filter</text>
+  <text x="905" y="424" text-anchor="middle" font-size="10" fill="#166534">Novel — 3-layer fusion</text>
+  <rect x="790" y="430" width="230" height="22" rx="5" fill="#86efac"/>
+  <text x="905" y="445" text-anchor="middle" font-size="9" fill="#14532d">Preemptive reduction · Adaptive Q</text>
+
+  <!-- Arrows down from estimators -->
+  <line x1="195" y1="442" x2="195" y2="470" stroke="#555" stroke-width="2" marker-end="url(#arrow)"/>
+  <line x1="550" y1="442" x2="550" y2="470" stroke="#555" stroke-width="2" marker-end="url(#arrow)"/>
+  <line x1="905" y1="442" x2="905" y2="470" stroke="#555" stroke-width="2" marker-end="url(#arrow)"/>
+
+  <!-- ============================================================ -->
+  <!-- ROW 4: HPR Detail Box (three layers) -->
+  <!-- ============================================================ -->
+  <rect x="622" y="472" width="556" height="210" rx="10" fill="#f0fdf4" stroke="#16a34a" stroke-width="1.5" stroke-dasharray="6,3"/>
+  <text x="900" y="494" text-anchor="middle" font-size="12" font-weight="bold" fill="#14532d">HPR Three-Layer Detail</text>
+
+  <!-- Layer 1 -->
+  <rect x="636" y="500" width="160" height="168" rx="8" fill="#bbf7d0" stroke="#22c55e" stroke-width="1.5"/>
+  <text x="716" y="519" text-anchor="middle" font-size="11" font-weight="bold" fill="#14532d">Layer 1: Reactive</text>
+  <line x1="646" y1="524" x2="786" y2="524" stroke="#86efac"/>
+  <text x="716" y="540" text-anchor="middle" font-size="9" fill="#166534">Delay-gradient EWMA</text>
+  <text x="716" y="554" text-anchor="middle" font-size="9" fill="#166534">5-type classification:</text>
+  <text x="716" y="568" text-anchor="middle" font-size="9" fill="#166534">severe → −22%</text>
+  <text x="716" y="581" text-anchor="middle" font-size="9" fill="#166534">delay → −15%</text>
+  <text x="716" y="594" text-anchor="middle" font-size="9" fill="#166534">wireless → −8%</text>
+  <text x="716" y="607" text-anchor="middle" font-size="9" fill="#166534">mild → +4%</text>
+  <text x="716" y="620" text-anchor="middle" font-size="9" fill="#166534">clear → +15%</text>
+  <text x="716" y="638" text-anchor="middle" font-size="9" font-style="italic" fill="#15803d">Signal: delay + loss</text>
+  <text x="716" y="652" text-anchor="middle" font-size="9" font-style="italic" fill="#15803d">Threshold: 10 ms</text>
+  <text x="716" y="666" text-anchor="middle" font-size="9" font-style="italic" fill="#15803d">Weight: adaptive</text>
+
+  <!-- Layer 2 -->
+  <rect x="808" y="500" width="160" height="168" rx="8" fill="#bbf7d0" stroke="#22c55e" stroke-width="1.5"/>
+  <text x="888" y="519" text-anchor="middle" font-size="11" font-weight="bold" fill="#14532d">Layer 2: Predictive</text>
+  <line x1="818" y1="524" x2="958" y2="524" stroke="#86efac"/>
+  <text x="888" y="540" text-anchor="middle" font-size="9" fill="#166534">Exp-weighted WLS trend</text>
+  <text x="888" y="554" text-anchor="middle" font-size="9" fill="#166534">Window: 10 samples</text>
+  <text x="888" y="568" text-anchor="middle" font-size="9" fill="#166534">Stability via CV score</text>
+  <text x="888" y="585" text-anchor="middle" font-size="9" fill="#166534">Preemptive reduction:</text>
+  <text x="888" y="599" text-anchor="middle" font-size="9" fill="#166534">if trend declining AND</text>
+  <text x="888" y="613" text-anchor="middle" font-size="9" fill="#166534">channel stable → reduce</text>
+  <text x="888" y="627" text-anchor="middle" font-size="9" fill="#166534">before congestion hits</text>
+  <text x="888" y="648" text-anchor="middle" font-size="9" font-style="italic" fill="#15803d">Max weight: 0.35</text>
+  <text x="888" y="662" text-anchor="middle" font-size="9" font-style="italic" fill="#15803d">Extrapolates 1 step ahead</text>
+
+  <!-- Layer 3 -->
+  <rect x="980" y="500" width="185" height="168" rx="8" fill="#bbf7d0" stroke="#22c55e" stroke-width="1.5"/>
+  <text x="1072" y="519" text-anchor="middle" font-size="11" font-weight="bold" fill="#14532d">Layer 3: Kalman</text>
+  <line x1="990" y1="524" x2="1155" y2="524" stroke="#86efac"/>
+  <text x="1072" y="540" text-anchor="middle" font-size="9" fill="#166534">Adaptive process noise Q</text>
+  <text x="1072" y="554" text-anchor="middle" font-size="9" fill="#166534">Q ∝ channel volatility (CV)</text>
+  <text x="1072" y="570" text-anchor="middle" font-size="9" fill="#166534">Volatile → large Q → fast adapt</text>
+  <text x="1072" y="584" text-anchor="middle" font-size="9" fill="#166534">Stable → small Q → smooth</text>
+  <text x="1072" y="598" text-anchor="middle" font-size="9" fill="#166534">Measurement noise R=120 kbps</text>
+  <text x="1072" y="614" text-anchor="middle" font-size="9" fill="#166534">Emergency brake on high loss</text>
+  <text x="1072" y="634" text-anchor="middle" font-size="9" font-style="italic" fill="#15803d">Base Q: 500</text>
+  <text x="1072" y="648" text-anchor="middle" font-size="9" font-style="italic" fill="#15803d">Fuses layers 1+2 estimates</text>
+  <text x="1072" y="662" text-anchor="middle" font-size="9" font-style="italic" fill="#15803d">Final output: smoothed BW</text>
+
+  <!-- ============================================================ -->
+  <!-- ROW 4: Metrics (left side) -->
+  <!-- ============================================================ -->
+  <rect x="60" y="472" width="540" height="90" rx="10" fill="#fff7ed" stroke="#ea580c" stroke-width="2" filter="url(#shadow)"/>
+  <text x="330" y="496" text-anchor="middle" font-size="13" font-weight="bold" fill="#7c2d12">Metrics Computation</text>
+  <rect x="75" y="505" width="110" height="48" rx="6" fill="#fed7aa" stroke="#fb923c"/>
+  <text x="130" y="523" text-anchor="middle" font-size="9" font-weight="bold" fill="#7c2d12">Accuracy</text>
+  <text x="130" y="536" text-anchor="middle" font-size="9" fill="#7c2d12">MAE · RMSE · MAPE</text>
+  <text x="130" y="549" text-anchor="middle" font-size="9" fill="#7c2d12">kbps / percent</text>
+  <rect x="196" y="505" width="110" height="48" rx="6" fill="#fed7aa" stroke="#fb923c"/>
+  <text x="251" y="523" text-anchor="middle" font-size="9" font-weight="bold" fill="#7c2d12">Throughput</text>
+  <text x="251" y="536" text-anchor="middle" font-size="9" fill="#7c2d12">Utilization</text>
+  <text x="251" y="549" text-anchor="middle" font-size="9" fill="#7c2d12">Overestimation %</text>
+  <rect x="317" y="505" width="110" height="48" rx="6" fill="#fed7aa" stroke="#fb923c"/>
+  <text x="372" y="523" text-anchor="middle" font-size="9" font-weight="bold" fill="#7c2d12">Video Quality</text>
+  <text x="372" y="536" text-anchor="middle" font-size="9" fill="#7c2d12">PSNR (dB)</text>
+  <text x="372" y="549" text-anchor="middle" font-size="9" fill="#7c2d12">MOS (1–5) · FPS</text>
+  <rect x="438" y="505" width="148" height="48" rx="6" fill="#fed7aa" stroke="#fb923c"/>
+  <text x="512" y="523" text-anchor="middle" font-size="9" font-weight="bold" fill="#7c2d12">Convergence</text>
+  <text x="512" y="536" text-anchor="middle" font-size="9" fill="#7c2d12">Time to ±20% after</text>
+  <text x="512" y="549" text-anchor="middle" font-size="9" fill="#7c2d12">BW change &gt;200 kbps</text>
+
+  <!-- Arrows to Metrics -->
+  <line x1="195" y1="470" x2="195" y2="490" stroke="#555" stroke-width="1.5"/>
+  <line x1="195" y1="490" x2="330" y2="490" stroke="#555" stroke-width="1.5"/>
+  <line x1="550" y1="470" x2="550" y2="490" stroke="#555" stroke-width="1.5"/>
+  <line x1="550" y1="490" x2="330" y2="490" stroke="#555" stroke-width="1.5"/>
+  <line x1="330" y1="490" x2="330" y2="472" stroke="#555" stroke-width="1.5" marker-end="url(#arrow)"/>
+
+  <!-- ============================================================ -->
+  <!-- ROW 5: JSON Export -->
+  <!-- ============================================================ -->
+  <line x1="330" y1="562" x2="330" y2="592" stroke="#555" stroke-width="2" marker-end="url(#arrow)"/>
+  <rect x="130" y="594" width="400" height="70" rx="10" fill="#f1f5f9" stroke="#64748b" stroke-width="2" filter="url(#shadow)"/>
+  <text x="330" y="618" text-anchor="middle" font-size="13" font-weight="bold" fill="#1e293b">JSON Export</text>
+  <rect x="148" y="626" width="175" height="30" rx="6" fill="#e2e8f0" stroke="#94a3b8"/>
+  <text x="236" y="641" text-anchor="middle" font-size="9" font-weight="bold" fill="#334155">all_results.json</text>
+  <text x="236" y="652" text-anchor="middle" font-size="9" fill="#475569">6 traces × 3 algos × 10 metrics</text>
+  <rect x="337" y="626" width="175" height="30" rx="6" fill="#e2e8f0" stroke="#94a3b8"/>
+  <text x="425" y="641" text-anchor="middle" font-size="9" font-weight="bold" fill="#334155">simulation_results.json</text>
+  <text x="425" y="652" text-anchor="middle" font-size="9" fill="#475569">Cellular 4G · 240-pt timeseries</text>
+
+  <!-- ============================================================ -->
+  <!-- Legend -->
+  <!-- ============================================================ -->
+  <rect x="60" y="690" width="980" height="110" rx="10" fill="#f8fafc" stroke="#cbd5e1" stroke-width="1.5"/>
+  <text x="550" y="712" text-anchor="middle" font-size="12" font-weight="bold" fill="#475569">Key Parameters &amp; Data Flow Legend</text>
+  <!-- params -->
+  <rect x="80" y="722" width="290" height="68" rx="6" fill="#f1f5f9" stroke="#e2e8f0"/>
+  <text x="225" y="739" text-anchor="middle" font-size="10" font-weight="bold" fill="#334155">Simulation Config</text>
+  <text x="225" y="754" text-anchor="middle" font-size="9" fill="#475569">Duration: 120 s  |  Step: 100 ms  |  Seed: 42</text>
+  <text x="225" y="768" text-anchor="middle" font-size="9" fill="#475569">Safety margin: 90%  |  Base delay: 50 ms</text>
+  <text x="225" y="782" text-anchor="middle" font-size="9" fill="#475569">Range: 100–10,000 kbps</text>
+
+  <rect x="390" y="722" width="290" height="68" rx="6" fill="#f1f5f9" stroke="#e2e8f0"/>
+  <text x="535" y="739" text-anchor="middle" font-size="10" font-weight="bold" fill="#334155">Quality Model</text>
+  <text x="535" y="754" text-anchor="middle" font-size="9" fill="#475569">PSNR: H.264-like log curve</text>
+  <text x="535" y="768" text-anchor="middle" font-size="9" fill="#475569">MOS: ITU-T P.800 piecewise linear</text>
+  <text x="535" y="782" text-anchor="middle" font-size="9" fill="#475569">FPS tiers: 30 / 24 / 15 / 10</text>
+
+  <rect x="700" y="722" width="320" height="68" rx="6" fill="#f1f5f9" stroke="#e2e8f0"/>
+  <text x="860" y="739" text-anchor="middle" font-size="10" font-weight="bold" fill="#334155">Arrow Key</text>
+  <line x1="720" y1="754" x2="760" y2="754" stroke="#555" stroke-width="2" marker-end="url(#arrow)"/>
+  <text x="780" y="757" font-size="9" fill="#475569">Data / packet flow</text>
+  <line x1="720" y1="772" x2="760" y2="772" stroke="#2563eb" stroke-width="2" stroke-dasharray="4,3" marker-end="url(#arrow-blue)"/>
+  <text x="780" y="775" font-size="9" fill="#475569">Feedback / signal</text>
+  <line x1="720" y1="790" x2="760" y2="790" stroke="#16a34a" stroke-width="2" stroke-dasharray="6,3"/>
+  <text x="780" y="793" font-size="9" fill="#475569">HPR internal boundary</text>
+</svg>

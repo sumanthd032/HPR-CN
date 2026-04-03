@@ -15,11 +15,16 @@ from hpr.network     import Packet, NetworkStats, NetworkLink
 from hpr.quality     import estimate_video_quality
 from hpr.metrics     import compute_metrics
 from hpr.export      import export_results_json
-from hpr.simulation  import SimulationConfig, run_simulation, run_comparison, ALGORITHM_KEYS
+from hpr.simulation  import (
+    SimulationConfig, run_simulation, run_comparison,
+    run_ablation, run_multi_seed,
+    ALGORITHM_KEYS, ABLATION_KEYS,
+)
 from hpr.estimators  import (
     BaseEstimator,
     AIMDEstimator,
     GCCEstimator,
+    NADAEstimator,
     HybridPredictiveEstimator,
 )
 
@@ -41,10 +46,14 @@ __all__ = [
     "SimulationConfig",
     "run_simulation",
     "run_comparison",
+    "run_ablation",
+    "run_multi_seed",
     "ALGORITHM_KEYS",
+    "ABLATION_KEYS",
     # Estimators
     "BaseEstimator",
     "AIMDEstimator",
     "GCCEstimator",
+    "NADAEstimator",
     "HybridPredictiveEstimator",
 ]

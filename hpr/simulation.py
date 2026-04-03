@@ -11,7 +11,7 @@ from typing import List
 
 from hpr.traces    import TraceType, generate_bandwidth_trace
 from hpr.network   import NetworkLink, NetworkStats, Packet
-from hpr.estimators import AIMDEstimator, GCCEstimator, HybridPredictiveEstimator
+from hpr.estimators import AIMDEstimator, GCCEstimator, NADAEstimator, HybridPredictiveEstimator
 from hpr.estimators.base import BaseEstimator
 from hpr.metrics   import compute_metrics
 
@@ -123,14 +123,23 @@ def run_simulation(
 # ---- Multi-algorithm comparison run --------------------------------------
 
 #: Canonical names used as dict keys throughout the codebase.
-ALGORITHM_KEYS = ["AIMD", "GCC", "HPR (Proposed)"]
+ALGORITHM_KEYS = ["AIMD", "GCC", "NADA", "HPR (Proposed)"]
+
+#: Ablation variant keys.
+ABLATION_KEYS = [
+    "HPR (Proposed)",
+    "HPR-NoPred",
+    "HPR-FixQ",
+    "HPR-NoPreemp",
+    "HPR-NoClassifier",
+]
 
 
-def run_comparison(config: SimulationConfig, seed: int = 42) -> dict:
+def run_comparison(config: SimulationConfig, seed: int = 42, verbose: bool = True) -> dict:
     """
-    Run AIMD, GCC, and HPR (Proposed) on the *same* bandwidth trace.
+    Run AIMD, GCC, NADA, and HPR on the *same* bandwidth trace.
 
-    Using a fixed ``seed`` ensures all three algorithms see identical network
+    Using a fixed ``seed`` ensures all algorithms see identical network
     conditions — the only variable is the estimator, making the comparison fair.
 
     Returns
@@ -139,22 +148,110 @@ def run_comparison(config: SimulationConfig, seed: int = 42) -> dict:
           Each value: ``{"stats": List[NetworkStats], "metrics": dict}``.
     """
     algorithms: dict = {
-        "AIMD":          AIMDEstimator(config.initial_rate_kbps),
-        "GCC":           GCCEstimator(config.initial_rate_kbps),
-        "HPR (Proposed)": HybridPredictiveEstimator(config.initial_rate_kbps),
+        "AIMD":            AIMDEstimator(config.initial_rate_kbps),
+        "GCC":             GCCEstimator(config.initial_rate_kbps),
+        "NADA":            NADAEstimator(config.initial_rate_kbps),
+        "HPR (Proposed)":  HybridPredictiveEstimator(config.initial_rate_kbps),
     }
 
     results: dict = {}
     for name, estimator in algorithms.items():
-        np.random.seed(seed)                       # identical trace for every algo
+        np.random.seed(seed)
         stats   = run_simulation(config, estimator)
         metrics = compute_metrics(stats)
         results[name] = {"stats": stats, "metrics": metrics}
 
-        print(f"\n{'='*50}")
-        print(f"Algorithm : {name}")
-        print(f"{'='*50}")
-        for key, val in metrics.items():
-            print(f"  {key}: {val}")
+        if verbose:
+            print(f"\n{'='*50}")
+            print(f"Algorithm : {name}")
+            print(f"{'='*50}")
+            for key, val in metrics.items():
+                print(f"  {key}: {val}")
 
     return results
+
+
+def run_ablation(config: SimulationConfig, seed: int = 42, verbose: bool = True) -> dict:
+    """
+    Run HPR ablation variants to isolate the contribution of each component.
+
+    Variants
+    --------
+    ``HPR (Proposed)``    — full HPR (all three layers)
+    ``HPR-NoPred``        — Layer 2 disabled (reactive + adaptive-Q Kalman only)
+    ``HPR-FixQ``          — Layer 3 uses fixed Q = Q0 (no adaptive scaling)
+    ``HPR-NoPreemp``      — preemptive reduction step disabled
+    ``HPR-NoClassifier``  — Layer 1 uses a simple 2-state classifier
+
+    Returns
+    -------
+    dict  Keyed by variant name. Each value: ``{"stats": ..., "metrics": ...}``.
+    """
+    variants: dict = {
+        "HPR (Proposed)":   HybridPredictiveEstimator(config.initial_rate_kbps),
+        "HPR-NoPred":       HybridPredictiveEstimator(config.initial_rate_kbps, ablation_mode="no_predictor"),
+        "HPR-FixQ":         HybridPredictiveEstimator(config.initial_rate_kbps, ablation_mode="fixed_q"),
+        "HPR-NoPreemp":     HybridPredictiveEstimator(config.initial_rate_kbps, ablation_mode="no_preemptive"),
+        "HPR-NoClassifier": HybridPredictiveEstimator(config.initial_rate_kbps, ablation_mode="no_classifier"),
+    }
+
+    results: dict = {}
+    for name, estimator in variants.items():
+        np.random.seed(seed)
+        stats   = run_simulation(config, estimator)
+        metrics = compute_metrics(stats)
+        results[name] = {"stats": stats, "metrics": metrics}
+
+        if verbose:
+            print(f"\n  {name}: overest={metrics['overestimation_pct']:.2f}%"
+                  f"  delay={metrics['avg_delay_ms']:.0f}ms"
+                  f"  MOS={metrics['avg_mos']:.2f}"
+                  f"  RMSE={metrics['rmse_kbps']:.0f}kbps")
+
+    return results
+
+
+def run_multi_seed(
+    config: SimulationConfig,
+    seeds: list = None,
+    verbose: bool = False,
+) -> dict:
+    """
+    Run all algorithms over multiple random seeds and return per-metric
+    mean ± std, enabling statistical variance reporting.
+
+    Returns
+    -------
+    dict  Two-level: outer key = algorithm, inner key = metric name.
+          Each leaf: ``{"mean": float, "std": float}``.
+    """
+    if seeds is None:
+        seeds = [42, 123, 456, 789, 1001]
+
+    # Accumulate per-algorithm, per-metric lists
+    accumulator: dict = {key: {} for key in ALGORITHM_KEYS}
+
+    for seed in seeds:
+        results = run_comparison(config, seed=seed, verbose=False)
+        for algo, data in results.items():
+            for metric, value in data["metrics"].items():
+                accumulator[algo].setdefault(metric, []).append(value)
+
+    # Compute mean ± std
+    summary: dict = {}
+    for algo, metric_lists in accumulator.items():
+        summary[algo] = {}
+        for metric, values in metric_lists.items():
+            arr = np.array(values)
+            summary[algo][metric] = {
+                "mean": round(float(np.mean(arr)), 4),
+                "std":  round(float(np.std(arr)),  4),
+            }
+
+    if verbose:
+        for algo, metrics in summary.items():
+            print(f"\n{algo}:")
+            for k, v in metrics.items():
+                print(f"  {k}: {v['mean']:.3f} ± {v['std']:.3f}")
+
+    return summary
